@@ -8,3 +8,4 @@ yarn add pg pg-hstore
 yarn sequelize migration:create --name=create-users
 yarn sequelize db:migrate
 yarn add yup
+yarn add date-fns@next
