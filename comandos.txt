@@ -1,0 +1,9 @@
+yarn init -y
+yarn add express
+yarn add sucrase nodemon -D
+yarn add eslint
+yarn add sequelize
+yarn add sequelize-cli-D
+yarn add pg pg-hstore
+yarn sequelize migration:create --name=create-users
+yarn sequelize db:migrate
