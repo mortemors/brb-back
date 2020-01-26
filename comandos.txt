@@ -10,3 +10,6 @@ yarn sequelize db:migrate
 yarn add yup
 yarn add date-fns@next
 yarn add nodemailer
+yarn add express-handlebars nodemailer-express-handlebars
+yarn add bee-queue
+
