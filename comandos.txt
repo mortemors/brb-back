@@ -9,3 +9,4 @@ yarn sequelize migration:create --name=create-users
 yarn sequelize db:migrate
 yarn add yup
 yarn add date-fns@next
+yarn add nodemailer
