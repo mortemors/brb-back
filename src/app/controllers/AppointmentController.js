@@ -78,7 +78,7 @@ class AppointmentController {
         .status(400)
         .json({ error: 'Appointment date is not available' });
     }
-    if (req.user_id === req.provider_id) {
+    if (req.userId === req.body.provider_id) {
       return res
         .status(400)
         .json({ error: 'Provider can not set an appointment with himself' });
@@ -113,6 +113,11 @@ class AppointmentController {
           as: 'provider',
           attributes: ['name', 'email'],
         },
+        {
+          model: User,
+          as: 'user',
+          attributes: ['name'],
+        },
       ],
     });
     if (appointment.user_id !== req.userId) {
@@ -135,7 +140,14 @@ class AppointmentController {
     await Mail.sendMail({
       to: `${appointment.provider.name} <${appointment.provider.email}`,
       subject: 'Agendamento cancelado',
-      text: 'Você tem um novo cancelamento',
+      template: 'cancellation',
+      context: {
+        provider: appointment.provider.name,
+        user: appointment.user.name,
+        date: format(appointment.date, "'dia' dd 'de' MMMM', às' H:mm'h.'", {
+          locale: pt,
+        }),
+      },
     });
 
     return res.json(appointment);
