@@ -1,5 +1,6 @@
 import * as Yup from 'yup';
 import { startOfHour, parseISO, isBefore, format, subHours } from 'date-fns';
+import { utcToZonedTime } from 'date-fns-tz';
 import pt from 'date-fns/locale/pt';
 import Appointment from '../models/Appointment';
 import User from '../models/User';
@@ -37,6 +38,7 @@ class AppointmentController {
   }
 
   async store(req, res) {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const schema = Yup.object().shape({
       provider_id: Yup.number().required(),
       date: Yup.date().required(),
@@ -58,7 +60,7 @@ class AppointmentController {
         .status(401)
         .json({ error: 'You can only create appointments with providers' });
     }
-    const hourStart = startOfHour(parseISO(date));
+    const hourStart = utcToZonedTime(startOfHour(parseISO(date)), timezone);
 
     /** Check for past dates */
     if (isBefore(hourStart, new Date())) {
@@ -94,7 +96,7 @@ class AppointmentController {
     /** Notify appointment provider */
     const user = await User.findByPk(req.userId);
     const formattedDate = format(
-      hourStart,
+      subHours(hourStart, 1), // corrige a hora
       "'dia' dd 'de' MMMM', às' H:mm'h.'",
       { locale: pt }
     );
